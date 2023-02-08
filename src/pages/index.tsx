@@ -2,15 +2,18 @@ import Image from 'next/image'
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useKeenSlider } from 'keen-slider/react'
 
+import Stripe from 'stripe'
 import { stripe } from '../lib/stripe'
+
 import { HomeContainer, Product } from '../styles/pages/home'
+import { LoadingHome } from '../components/Loading/LoadingHome'
+import { Handbag } from 'phosphor-react'
 
 import 'keen-slider/keen-slider.min.css'
-import Stripe from 'stripe'
-import { Handbag } from 'phosphor-react'
 
 interface HomeProps {
   products: {
@@ -22,12 +25,17 @@ interface HomeProps {
 }
 
 export default function Home({ products }: HomeProps) {
+  const { isFallback } = useRouter()
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 3,
       spacing: 48,
     }
   })
+
+  if(isFallback) {
+    return <LoadingHome />
+  }
 
   return (
     <>

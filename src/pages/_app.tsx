@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import { Container } from '../styles/pages/app'
 import { Header } from '../components/Header'
+import { CartContextProvider } from '../contexts/CartContext'
 import { CartProvider } from 'use-shopping-cart'
 
 import { globalStyles } from '../styles/global'
@@ -25,11 +26,13 @@ export default function App({ Component, pageProps }: AppProps) {
       billingAddressCollection={true}
       shouldPersist
     >
-      <Container>
-        <Header />
-        <Component {...pageProps} />
-      </Container>
-      <ToastContainer />
+      <CartContextProvider>
+        <Container>
+          <Header />
+          <Component {...pageProps} />
+        </Container>
+        <ToastContainer />
+      </CartContextProvider>
     </CartProvider>
   )
 }

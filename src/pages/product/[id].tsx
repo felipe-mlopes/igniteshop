@@ -1,46 +1,46 @@
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import Head from "next/head"
+import { useRouter } from "next/router"
 
 import Stripe from "stripe"
 import { stripe } from "../../lib/stripe"
 
-import { useShoppingCart } from "use-shopping-cart"
-import { Product } from "use-shopping-cart/core"
-
-import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
+import { useContext } from "react"
 import { toast } from "react-toastify"
+
+import { CartContext } from "../../contexts/CartContext"
+import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
+import { LoadingProduct } from "../../components/Loading/LoadingProduct"
 
 export interface ProductProps {
   product: {
     id: string,
     name: string,
     imageUrl: string,
-    price: string,
+    price: number,
     description: string,
     defaultPriceId: string,
+    sku: string,
+    currency: 'BRL',
   }
 }
 
 export default function ProductAvailable({ product }: ProductProps) {
-  const { addItem } = useShoppingCart()
+  const { isFallback } = useRouter()
   const { name, imageUrl, price, description } = product
-
-  const item: Product = {
-      name: product.name,
-      sku: product.id,
-      price: Number(product.price),
-      currency: 'BRL',
-      image: product.imageUrl
-    }
+  const { addItem } = useContext(CartContext)
 
   function handleAddToCart() {
-    addItem(item, { count: 1 })
+    addItem(product, {})
     toast.success('Produto adicionado ao carrinho', {
       position: toast.POSITION.TOP_CENTER,
       autoClose: 1500,
     })
-    
+  }
+
+  if(isFallback) {
+    return <LoadingProduct />
   }
   
   return (
@@ -74,7 +74,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths: [
       { params: { id: 'prod_MLH5Wy0Y97hDAC' } }
     ],
-    fallback: 'blocking'
+    fallback: true
   }
 }
 
@@ -98,9 +98,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
           currency: 'BRL'
         }).format(price.unit_amount! / 100),
         description: product.description,
-        // defaultPriceId: price.id,
-        // sku: product.id,
-        // currency: price.currency
+        defaultPriceId: price.id
       }
     },
     revalidate: 60 * 60 * 1 // 1 hour
