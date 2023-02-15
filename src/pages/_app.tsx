@@ -11,19 +11,13 @@ import "react-toastify/dist/ReactToastify.css"
 globalStyles()
 
 const stripeKey = `${process.env.STRIPE_PUBLIC_KEY}`
-const successUrl = `${process.env.NEXT_URL}/success?session_id={CHECKOUT_SESSION_ID}`
-const cancelUrl = `${process.env.NEXT_URL}/`
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <CartProvider
-      mode='payment'
-      cartMode='client-only'
       stripe={stripeKey}
-      successUrl={successUrl}
-      cancelUrl={cancelUrl}
+      cartMode='checkout-session'
       currency='BRL'
-      billingAddressCollection={true}
       shouldPersist
     >
       <CartContextProvider>

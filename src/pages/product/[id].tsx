@@ -39,6 +39,7 @@ export default function ProductAvailable({ product }: ProductProps) {
     })
   }
 
+
   if(isFallback) {
     return <LoadingProduct />
   }

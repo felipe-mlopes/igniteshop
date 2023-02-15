@@ -13,7 +13,7 @@ export interface CartInfoProps {
   imageUrl: string,
   price: number,
   quantity: number,
-  priceId: string
+  defaultPriceId: string
 }
 
 export function Cart() {
@@ -26,13 +26,11 @@ export function Cart() {
   const cartInfo: CartInfoProps[] = Object.values(cartDetails!).map(product => ({
     id: product.id,
     name: product.name,
-    imageUrl: product.image as string,
+    imageUrl: product.imageUrl,
     price: product.price,
     quantity: product.quantity,
-    priceId: product.price_id
+    defaultPriceId: product.defaultPriceId
   }))
-
-  console.log(cartDetails)
 
   const priceTotal = cartEntries.map((item: any) => {
     const price = item.props.entry.price 

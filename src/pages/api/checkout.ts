@@ -23,17 +23,15 @@ export default async function handler(
 
   const lineItems = cartInfo.map((item: CartInfoProps) => {
     return {
-      id: item.id,
+      price: item.defaultPriceId,
       quantity: item.quantity
     }
   })
 
-  console.log(lineItems)
-
   const checkoutSession = await stripe.checkout.sessions.create({
+    mode: 'payment',
     success_url: successUrl,
     cancel_url: cancelUrl,
-    mode: 'payment',
     line_items: lineItems
   })
 
